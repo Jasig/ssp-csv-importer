@@ -35,37 +35,45 @@ class CsvImporterProcessor {
             lastRun = now - ARGS[ARG_KEYS.LAG_TIME_MIN_FLAG].minutes
         }
 
-		File inputDir = new File(ARGS[ARG_KEYS.INPUT_DIR_FLAG])
-        File processingDir = new File(ARGS[ARG_KEYS.PROCESSING_DIR_FLAG])
-        File archiveDir = null
-        if(StringUtils.isNotBlank(ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG]))
-            archiveDir = new File(ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG])
+		File inputDir = createDirectories(ARGS[ARG_KEYS.INPUT_DIR_FLAG])
 
+        File processingDir = createDirectories(ARGS[ARG_KEYS.PROCESSING_DIR_FLAG])
+        File archiveDir = null
+        if(StringUtils.isNotBlank(ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG])) {
+            archiveDir = createDirectories(ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG])
+        }
 		log.info 'Path To Input Folder: ' + ARGS[ARG_KEYS.INPUT_DIR_FLAG]
 		log.info 'Path To Processing Folder: ' + ARGS[ARG_KEYS.PROCESSING_DIR_FLAG]
 		log.info 'Path To Archive Folder: ' + ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG]
 		Boolean filesReady = true
+        Integer filesToProcess = 0;
         for(TableMetaData table:TABLES)   {
             File file = new File(inputDir, table.fileName)
 			Date fileModifiedDate =  new Date(file.lastModified())
-            if(file.isFile() && !fileModifiedDate.before(lastRun)){
+            if(file.isFile() && file.exists() && !fileModifiedDate.before(lastRun)){
 	            filesReady = false
             }
+            if(file.isFile() && file.exists())
+                filesToProcess++
         }
-		if(!filesReady)
+		if(!filesReady || filesToProcess == 0) {
 			System.exit(0)
+            log.info "Files not ready to process. Number of files found:" + filesToProcess.toString()
+        }
 		String filesToBeProcessed = ""
 		for(TableMetaData table:TABLES)   {
             File file = new File(inputDir, table.fileName)
-			file.renameTo(new File(processingDir, file.getName()));
-            filesToBeProcessed += file.getName() + " \n"
+            if(file.isFile() && file.exists()) {
+			    file.renameTo(new File(processingDir, file.getName()));
+                filesToBeProcessed += file.getName() + " \n"
+            }
         }
         EmailService.notifyProcessingStarted(filesToBeProcessed)
         String filesProcessed = ""
         for(TableMetaData table:TABLES)   {
             File file = new File(processingDir, table.fileName)
 			String processed_prefix = ""
-            if(file.isFile())    {
+            if(file.isFile() && file.exists())    {
                 CsvController controller = new CsvController()
 				try{
                     controller.process(file, table.beanClass,
@@ -95,5 +103,14 @@ class CsvImporterProcessor {
             }
         }
         EmailService.notifyProcessingCompleted(filesProcessed)
+    }
+
+    private static File createDirectories(directoryPath) {
+        File dir = new File(directoryPath)
+        if (!dir.exists()) {
+            if(!dir.mkdirs())
+                System.exit(1)
+        }
+        return dir
     }
 }
