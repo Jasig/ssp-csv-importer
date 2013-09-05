@@ -63,5 +63,5 @@ dependencies {
 	compile 'javax.mail:mail:1.4.4'
     compile 'org.apache.ant:ant-javamail:1.8.1'
     compile 'org.hibernate:hibernate-validator:4.2.0.Final'
-    compile 'org.jasig.ssp:ssp:1.2.2-SNAPSHOT'
+    compile 'org.jasig.ssp:ssp:1.2.2-SNAPSHOT:classes'
 }
