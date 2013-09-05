@@ -56,19 +56,33 @@ class CsvImporterProcessor {
             if(file.isFile() && file.exists())
                 filesToProcess++
         }
-		if(!filesReady || filesToProcess == 0) {
-			System.exit(0)
+        if(!filesReady) {
+            System.exit(0)
             log.info "Files not ready to process. Number of files found:" + filesToProcess.toString()
         }
-		String filesToBeProcessed = ""
+
 		for(TableMetaData table:TABLES)   {
             File file = new File(inputDir, table.fileName)
             if(file.isFile() && file.exists()) {
 			    file.renameTo(new File(processingDir, file.getName()));
-                filesToBeProcessed += file.getName() + " \n"
             }
         }
-        EmailService.notifyProcessingStarted(filesToBeProcessed)
+        filesToProcess = 0
+        String filesToBeProcessed = ""
+        for(TableMetaData table:TABLES)   {
+            File file = new File(processingDir, table.fileName)
+            if(file.isFile() && file.exists()) {
+                filesToBeProcessed += file.getName() + " \n"
+                filesToProcess++
+            }
+        }
+
+        if(StringUtils.isNotBlank(filesToBeProcessed))
+            EmailService.notifyProcessingStarted(filesToBeProcessed)
+        else {
+            System.exit(0)
+            log.info "No Files processed"
+        }
         String filesProcessed = ""
         for(TableMetaData table:TABLES)   {
             File file = new File(processingDir, table.fileName)
