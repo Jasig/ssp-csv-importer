@@ -51,7 +51,7 @@ class CsvTableDefinition {
             new TableMetaData("external_student_test", 					/*** external_student_test ***/
 								"external_student_test.csv", 
 								ExternalStudentTest.class, 
-								null, 
+								["school_id","test_code","sub_test_code","test_date"],
 								editorsExternalStudentTest),			
             new TableMetaData("external_student_transcript_course", 	/*** external_student_transcript_course ***/
 								"external_student_transcript_course.csv", 
@@ -61,22 +61,22 @@ class CsvTableDefinition {
             new TableMetaData("external_student_academic_program", 		/*** external_student_academic_program ***/
 								"external_student_academic_program.csv", 
 								ExternalStudentAcademicProgram.class, 
-								null, 
+								["school_id","degree_code","program_code"],
 								null),
             new TableMetaData("external_registration_status_by_term",   /*** external_registration_status_by_term ***/
 								"external_registration_status_by_term.csv", 
 								RegistrationStatusByTerm.class, 
-								null, 
+								["school_id", "term_code"],
 								editorsRegistrationStatusByTerm),
             new TableMetaData("external_student_transcript", 			/*** external_student_transcript ***/
 								"external_student_transcript.csv", 
 								ExternalStudentTranscript.class, 
-								null, 
+								["school_id"],
 								editorsExternalStudentTranscript),
             new TableMetaData("external_term", 							/*** external_term ***/
 								"external_term.csv", 
 								Term.class, 
-								null, 
+								["code"],
 								editorsTerm)]
 
 }
