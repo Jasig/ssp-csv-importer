@@ -39,12 +39,12 @@ run {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
     groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.1.6'
-	compile 'org.codehaus.groovy:groovy-all:2.1.6'
     compile 'org.hibernate:hibernate-core:4.0.1.Final'
     compile 'javax.validation:validation-api:1.0.0.GA'
     compile 'log4j:log4j:1.2.17'
@@ -63,6 +63,5 @@ dependencies {
 	compile 'javax.mail:mail:1.4.4'
     compile 'org.apache.ant:ant-javamail:1.8.1'
     compile 'org.hibernate:hibernate-validator:4.2.0.Final'
-    compile 'org.jasig:ssp:1.2.2-SNAPSHOT'
-    compile fileTree('lib')
+    compile 'org.jasig.ssp:ssp:1.2.2-SNAPSHOT'
 }
