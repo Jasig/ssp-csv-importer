@@ -77,7 +77,7 @@ switch (environment) {
         CSV_IGNORE_LEADING_WHITESPACE_FLAG = null
         CSV_NULL_CHARACTER_FLAG = null
         EMAIL_FROM_FLAG = null
-        EMAIL_TO_FLAG = "jstanley@unicon.net"
+        EMAIL_TO_FLAG = null
         EMAIL_HOST_FLAG = null
         EMAIL_PORT_FLAG = null
         EMAIL_USERNAME_FLAG = null
@@ -104,13 +104,13 @@ switch (environment) {
         CSV_SKIP_LINES_FLAG = null
         CSV_IGNORE_LEADING_WHITESPACE_FLAG = null
         CSV_NULL_CHARACTER_FLAG = null
-        EMAIL_FROM_FLAG = "\"SSP DATA IMPORTER\"<jstanley@unicon.net>"
-        EMAIL_TO_FLAG = "\"SSP DATA IMPORTER\"<jstanley@unicon.net>, \"SSP DATA IMPORTER\"<jstanley70@gmail.com>"
-        EMAIL_HOST_FLAG = "smtp.gmail.com"
-        EMAIL_PORT_FLAG = "465"
-        EMAIL_USERNAME_FLAG = "jstanley70@gmail.com"
-        EMAIL_PASSWORD_FLAG = "imml943@pang"
-        EMAIL_PROTOCOL_FLAG = "smtps"
-        EMAIL_SSL_REQUIRED_FLAG = "true"
+        EMAIL_FROM_FLAG = null
+        EMAIL_TO_FLAG = null
+        EMAIL_HOST_FLAG = null
+        EMAIL_PORT_FLAG = null
+        EMAIL_USERNAME_FLAG = null
+        EMAIL_PASSWORD_FLAG = null
+        EMAIL_PROTOCOL_FLAG = null
+        EMAIL_SSL_REQUIRED_FLAG = null
 }
 
