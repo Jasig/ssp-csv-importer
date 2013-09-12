@@ -22,6 +22,7 @@ package org.jasig.ssp.util.importers.csv
 import au.com.bytecode.csv.bean.MappingStrategy
 import au.com.bytecode.csv.bean.CsvToBean
 import au.com.bytecode.csv.CSVReader
+import org.apache.commons.lang.StringUtils
 import org.jasig.ssp.util.importers.csv.editors.Editor
 
 import javax.validation.ConstraintViolation
@@ -43,6 +44,7 @@ class CsvToBeanConverter {
     Map<String, Editor> editors
     Validator beanValidator;
     Integer beansInViolation  = 0
+    String beanSetValidationErrors  = ""
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory()
     Integer maximumValidationErrorPerFile = 100
 	private MappingStrategy strategy = null
@@ -72,9 +74,12 @@ class CsvToBeanConverter {
             if(beansInViolation > maximumValidationErrorPerFile )  {
 				String msg = VALIDATION_ERROR + "Maximum number of validation errors exceeded for "  + beans.get(0).getClass().getName()
                 log.error msg
-                EmailService.notifyExcessiveValidationErrors(msg)
+                beanSetValidationErrors = msg + "\n Validation Errors follow: \n" + beanSetValidationErrors
+                EmailService.notifyExcessiveValidationErrors(beanSetValidationErrors)
                 return new ArrayList<Object>()
             }
+            if(StringUtils.isNotBlank(beanSetValidationErrors))
+                notifyValidationError(beanSetValidationErrors)
             return  validatedBeans
         }
         return  beans
@@ -88,7 +93,7 @@ class CsvToBeanConverter {
             for(ConstraintViolation violation:constraintViolations){
 				String msg = violation.getMessage() + " for object type " + bean.getClass().getName()   + "." + violation.propertyPath  + " bean: " + beanLineNumber
                 log.error msg
-                notifyValidationError(msg)
+                beanSetValidationErrors += msg + "\n"
             }
             return null;
         }
