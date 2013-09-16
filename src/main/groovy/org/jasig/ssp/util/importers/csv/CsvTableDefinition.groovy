@@ -16,8 +16,8 @@ import org.jasig.ssp.model.external.*
 class CsvTableDefinition {
     /*********** Editors need for converting string values to bean values, most likely a more generic solution is available   *************/
 
-    private static final editorsExternalPerson = ["birthDate":new DateEditor("yyyy-MM-dd"), "actualStartYear": new IntegerEditor(), "balanceOwed": new BigDecimalEditor()]
-    private static final editorsExternalStudentTest = ["testDate":new DateEditor("yyyy-MM-dd"),"score": new BigDecimalEditor()]
+    private static final editorsExternalPerson = ["birthDate":new DateEditor(["yyyy-MM-dd","MM/dd/yy"]), "actualStartYear": new IntegerEditor(), "balanceOwed": new BigDecimalEditor()]
+    private static final editorsExternalStudentTest = ["testDate":new DateEditor(["yyyy-MM-dd","MM/dd/yy"]),"score": new BigDecimalEditor()]
     private static final editorsExternalStudentTranscript = ["creditHoursForGpa": new BigDecimalEditor(),
             "creditHoursAttempted": new BigDecimalEditor(),
             "totalQualityPoints": new BigDecimalEditor(),
@@ -27,8 +27,8 @@ class CsvTableDefinition {
 
     private static final editorsRegistrationStatusByTerm = ["registeredCourseCount": new IntegerEditor()]
 
-    private static final editorsTerm = ["startDate": new DateEditor("yyyy-MM-dd"),
-            "endDate": new DateEditor("yyyy-MM-dd"),
+    private static final editorsTerm = ["startDate": new DateEditor(["yyyy-MM-dd","MM/dd/yyyy HH:mm:ss"]),
+            "endDate": new DateEditor(["yyyy-MM-dd","MM/dd/yyyy HH:mm:ss"]),
             "reportYear": new IntegerEditor()]
 
 /*********** END EDITORS   *************/

@@ -25,6 +25,6 @@ class IntegerEditor implements Editor {
     def   fromText(String value){
         if(StringUtils.isNotBlank(value))
             return Integer.parseInt(value)
-        return null
+        return 0
     }
 }

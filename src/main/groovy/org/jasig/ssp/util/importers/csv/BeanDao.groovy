@@ -93,7 +93,7 @@ class BeanDao {
         if (null != prop) {
             value =  prop.getReadMethod().invoke(bean).toString();
         }
-        if(value == null)
+        if(value == null || value.equals('null'))
             return null;
         return "'" + value  + "'"
     }
@@ -104,7 +104,7 @@ class BeanDao {
         if (null != prop) {
             value =  prop.getReadMethod().invoke(bean).toString();
         }
-        if(value == null)
+        if(value == null || value.equals('null'))
             return null;
         return "'" + value + "'"
     }

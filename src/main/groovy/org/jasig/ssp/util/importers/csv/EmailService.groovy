@@ -38,8 +38,8 @@ class EmailService {
 		sendEmail("SSP IMPORT FILES PROCESSING COMPLETED", "Processing Completed for files: \n"  + fileNames)
 	}
 	
-	static public def notifyException(exp){
-		sendEmail("SSP Import threw exception on ${new Date()}", "Parsing Stopped. Exception thrown:" + exp.dump())
+	static public def notifyException(suffix, Exception exp){
+		sendEmail("SSP Import threw exception on ${new Date()}", "Parsing Stopped. Exception thrown:" + suffix + exp.getMessage() + exp.dump())
 	}
 	
 	static public def notifyBeanNotUnique(msg){
@@ -47,7 +47,11 @@ class EmailService {
 	}
 	
 	static public def notifyValidationError(validationErrorMsg){
-		sendEmail("SSP Import found invalid lines on ${new Date()}", "Invalid row/bean: " + validationErrorMsg)
+		sendEmail("SSP Import found invalid lines on ${new Date()}", "Invalid row/bean:\n " + validationErrorMsg)
+	}
+	
+	static public def notifyParsingError(parsingErrorMsg){
+		sendEmail("SSP Import found parsing errors on ${new Date()}", "Errors follow: \n" + parsingErrorMsg)
 	}
 	
 	static public def notifyExcessiveValidationErrors(file, validationErrorMsg){
@@ -76,7 +80,7 @@ class EmailService {
         transport.sendMessage(msg, msg.getAllRecipients())
         transport.close()
         }catch(Exception exp){
-            log.error EMAIL_ERROR + exp.getMessage()  + exp.getStackTrace()
+            log.error EMAIL_ERROR  + exp.getMessage()  + exp.getStackTrace()
         }
       }
 

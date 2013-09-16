@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils
 
 class BigDecimalEditor implements Editor{
     def fromText(String value) {
-        if(StringUtils.isNotBlank(value))
+        if(value != null && StringUtils.isNotBlank(value))
             return new BigDecimal(value)
 		return null
     }

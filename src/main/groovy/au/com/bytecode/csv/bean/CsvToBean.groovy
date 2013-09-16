@@ -8,6 +8,8 @@ import java.beans.PropertyEditorManager
 import java.lang.reflect.InvocationTargetException
 import org.jasig.ssp.util.importers.csv.editors.Editor
 import groovy.util.logging.Log4j
+import static org.jasig.ssp.util.importers.csv.EmailService.notifyParsingError
+import org.apache.commons.lang.StringUtils
 
 import au.com.bytecode.csv.CSVReader
 /**
@@ -22,25 +24,33 @@ class CsvToBean {
     private Map<Class<?>, PropertyEditor> editorMap = null;
 
     private static final String ERROR_PREFIX = "Parsing Error: ";
+	private String columnParsingErrors = ""
 
     public List parse(MappingStrategy mapper, Reader reader) {
         return parse(mapper, new CSVReader(reader));
     }
 
     public List parse(MappingStrategy mapper, CSVReader csv, Map<String,Editor> editors) {
+        Integer count = 0;
         try {
             String[] line;
             List list = new ArrayList();
+
             while (null != (line = csv.readNext())) {
+                count++;
                 Object obj = processLine(mapper, editors, line);
                 if(obj == null)
                     continue
                 list.add(obj);
             }
+			if(StringUtils.isNotBlank(columnParsingErrors)){
+				notifyParsingError(columnParsingErrors)
+			}
             return list;
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing CSV!", e);
+            throw new RuntimeException("Error parsing CSV! Error occured on line: " + count + e.getMessage() + "\n Column Errors:" + columnParsingErrors, e);
         }
+		
     }
 
     protected Object processLine(MappingStrategy mapper, Map<String,Editor> editors, String[] line) throws IllegalAccessException, InvocationTargetException, InstantiationException, IntrospectionException {
@@ -48,9 +58,17 @@ class CsvToBean {
         for (int col = 0; col < line.length; col++) {
             PropertyDescriptor prop = mapper.findDescriptor(col);
             if (null != prop) {
+				
                 String value = checkForTrim(line[col], prop);
+				try{
                 Object obj = convertValue(value, prop, editors == null ? null : editors.get(prop.name));
-                prop.getWriteMethod().invoke(bean, obj);
+				if(obj != null)
+                	prop.getWriteMethod().invoke(bean, obj);
+				}catch(Exception exp){
+					String errorMessage = "Error parsing CSV! Error occured on column: " + col + " : value " + value + " property: " + prop.name + " error:" + exp.getMessage() + " processing continues.\n ";
+					log.error errorMessage
+					this.columnParsingErrors += errorMessage
+				}
             }
         }
         return bean;

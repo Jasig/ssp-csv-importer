@@ -32,7 +32,8 @@ class CsvImporterProcessor {
         Date now = new Date()
         Date lastRun
         use(TimeCategory) {
-            lastRun = now - ARGS[ARG_KEYS.LAG_TIME_MIN_FLAG].minutes
+			Integer lagTime = Integer.parseInt(ARGS[ARG_KEYS.LAG_TIME_MIN_FLAG].toString())
+            lastRun = now - lagTime.minutes
         }
 
 		File inputDir = createDirectories(ARGS[ARG_KEYS.INPUT_DIR_FLAG])
@@ -97,7 +98,8 @@ class CsvImporterProcessor {
                         ARGS[ARG_KEYS.VALIDATE_FLAG],
                         ARGS[ARG_KEYS.MAX_FAIL_FLAG])
 				} catch(Exception exp){
-                    EmailService.notifyException(exp)
+					log.error "Processing failed for table: " + table.tableName + " \n" + exp.getMessage() + " \n" + exp.getStackTrace()
+                    EmailService.notifyException("processing failed for table" + table.tableName, exp)
 					processed_prefix = "PROCESSING_FAILED_"
 				}finally{
 					

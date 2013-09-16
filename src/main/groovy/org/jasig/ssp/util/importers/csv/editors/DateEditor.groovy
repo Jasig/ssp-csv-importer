@@ -21,23 +21,48 @@ package org.jasig.ssp.util.importers.csv.editors
 
 import org.apache.commons.lang.StringUtils 
 import java.text.SimpleDateFormat
+import groovy.util.logging.Log4j
 
+@Log4j
 class DateEditor implements Editor{
 
-    SimpleDateFormat  format;
+    List<SimpleDateFormat>  formats = new ArrayList<SimpleDateFormat>();
 
     DateEditor(SimpleDateFormat format){
-        this.format = format;
+        this.formats.add(format);
     }
 
     DateEditor(String formatAsString){
-        this.format = new SimpleDateFormat(formatAsString);
+        this.formats.add(new SimpleDateFormat(formatAsString));
+    }
+
+	DateEditor(ArrayList<String> formatAsStrings){
+		for(String formatAsString : formatAsStrings)
+        	this.formats.add(new SimpleDateFormat(formatAsString));
     }
 
 
     def fromText(String value) {
-		if(StringUtils.isNotBlank(value))
-        	return format.parse(value)
+		String parsingErrors = ""
+		if(value != null && StringUtils.isNotBlank(value)){
+			for(SimpleDateFormat format : formats){
+				try{
+					Date date =  format.parse(value)
+					return date
+				}catch(Exception e){
+					parsingErrors += e.getMessage()
+				}
+			}
+		}
+		if(StringUtils.isNotBlank(parsingErrors)){
+			String allowedFormats = ""
+			for(SimpleDateFormat format: formats){
+				allowedFormats += format.toPattern() + " : ";
+			}
+        	log.error parsingErrors	 + "allowed formats: " + allowedFormats
+			throw new Exception(parsingErrors	 + "allowed formats: " + allowedFormats)
+		}
+
 		return null
     }
 }
