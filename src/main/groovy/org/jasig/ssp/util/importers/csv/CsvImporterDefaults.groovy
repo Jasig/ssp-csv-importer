@@ -31,7 +31,7 @@ import static CsvImporterMeta.*
  */
 class CsvImporterDefaults {
 	private static final rootPath = System.getProperty("user.dir") + "/data/"
-	public static def ARG_DEFAULT_VALUES = [(ARG_KEYS.DB_URL_FLAG) :"jdbc:postgresql://localhost:5432/ssp_upload_test",
+	public static def ARG_DEFAULT_VALUES = [(ARG_KEYS.DB_URL_FLAG) :"jdbc:postgresql://localhost:5432/ssp",
     	(ARG_KEYS.DB_USERNAME_FLAG):"sspadmin",
 	    (ARG_KEYS.DB_PASSWORD_FLAG):"sspadmin",
 		(ARG_KEYS.DB_DRIVER_FLAG):"org.postgresql.Driver",
