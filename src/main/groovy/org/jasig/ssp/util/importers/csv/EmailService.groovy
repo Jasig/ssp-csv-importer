@@ -63,7 +63,7 @@ class EmailService {
 
     static private def sendEmail(subject, message)  {
         if ( !(emailActive) ) {
-            log.info("Swallowed email message [#{subject}] [#{message}]")
+            log.info("Swallowed email message [${subject}] [${message}]")
             return
         }
         try{
