@@ -28,12 +28,13 @@ import static CsvImporterDefaults.*
 class CsvImporterMain {
     public static void main(String[] args) {
         String env = System.getenv("env")
+        if (env == null)
+            env = System.getProperty("env")
         if(env == null)
             env = getEnv(args)
 
         def config = new ConfigSlurper(env).parse(new File('log4j.groovy').toURI().toURL())
         PropertyConfigurator.configure(config.toProperties())
-
         ARGS = handleOptions(args, new ConfigSlurper(env).parse(new File('config.groovy').toURI().toURL()).toProperties())
 		CsvImporterProcessor.process()
     }
