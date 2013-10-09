@@ -31,7 +31,7 @@ class CsvImporterMain {
 		if (env == null)
             env = System.getProperty("env")
 		// want to take the command line env if any
-        if(args != null && arg.lengh > 0)
+        if(args != null && args.lengh > 0)
             env = getEnv(args)
 
 		println "env:" + env
