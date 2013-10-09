@@ -28,15 +28,14 @@ import static CsvImporterDefaults.*
 class CsvImporterMain {
     public static void main(String[] args) {
         String env = System.getenv("env")
-        if (args.length > 0)
- 		{
-			String value = getEnv(args)
-			if(StringUtils.isNotBlank(value)){
-			   env = value
-			}
-		}
+		if (env == null)
+            env = System.getProperty("env")
+		// want to take the command line env if any
+        if(args != null && arg.lengh > 0)
+            env = getEnv(args)
+
 		println "env:" + env
-	    // configures logger
+		
         def config = new ConfigSlurper(env).parse(new File('log4j.groovy').toURI().toURL())
         PropertyConfigurator.configure(config.toProperties())
         ARGS = handleOptions(args, new ConfigSlurper(env).parse(new File('config.groovy').toURI().toURL()).toProperties())

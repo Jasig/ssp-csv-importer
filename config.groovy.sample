@@ -27,6 +27,7 @@ switch (environment) {
         EMAIL_PASSWORD_FLAG = null
         EMAIL_PROTOCOL_FLAG = null
         EMAIL_SSL_REQUIRED_FLAG = null
+        break
     case "test":
         DB_URL_FLAG = null
         DB_USERNAME_FLAG = null
@@ -55,7 +56,7 @@ switch (environment) {
         EMAIL_PASSWORD_FLAG = null
         EMAIL_PROTOCOL_FLAG = null
         EMAIL_SSL_REQUIRED_FLAG = null
-
+        break
     case "prod":
         DB_URL_FLAG = null
         DB_USERNAME_FLAG = null
@@ -84,6 +85,7 @@ switch (environment) {
         EMAIL_PASSWORD_FLAG = null
         EMAIL_PROTOCOL_FLAG = null
         EMAIL_SSL_REQUIRED_FLAG = null
+        break
     default:
         DB_URL_FLAG = null
         DB_USERNAME_FLAG = null

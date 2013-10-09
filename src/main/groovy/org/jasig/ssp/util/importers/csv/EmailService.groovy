@@ -20,6 +20,7 @@ class EmailService {
 	static private String protocol = ARGS[ARG_KEYS.EMAIL_PROTOCOL_FLAG]
 	static private String username = ARGS[ARG_KEYS.EMAIL_USERNAME_FLAG]
 	static private String password = ARGS[ARG_KEYS.EMAIL_PASSWORD_FLAG]
+	static private String emailActive = Boolean.parseBoolean(ARGS[ARG_KEYS.EMAIL_ACTIVE].toString())
 	static private Boolean sslRequired = Boolean.parseBoolean(ARGS[ARG_KEYS.EMAIL_SSL_REQUIRED_FLAG].toString())
 	
 	static private  def getFromAddress(){
@@ -61,6 +62,10 @@ class EmailService {
 
 
     static private def sendEmail(subject, message)  {
+        if ( !(emailActive) ) {
+            log.info("Swallowed email message [${subject}] [${message}]")
+            return
+        }
         try{
         Session mailSession = null;
         if(sslRequired)
