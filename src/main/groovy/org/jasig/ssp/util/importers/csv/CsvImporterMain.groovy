@@ -28,12 +28,17 @@ import static CsvImporterDefaults.*
 class CsvImporterMain {
     public static void main(String[] args) {
         String env = System.getenv("env")
-        if(env == null)
-            env = getEnv(args)
-
+        if (args.length > 0)
+ 		{
+			String value = getEnv(args)
+			if(StringUtils.isNotBlank(value)){
+			   env = value
+			}
+		}
+		println "env:" + env
+	    // configures logger
         def config = new ConfigSlurper(env).parse(new File('log4j.groovy').toURI().toURL())
         PropertyConfigurator.configure(config.toProperties())
-
         ARGS = handleOptions(args, new ConfigSlurper(env).parse(new File('config.groovy').toURI().toURL()).toProperties())
 		CsvImporterProcessor.process()
     }
@@ -64,22 +69,22 @@ class CsvImporterMain {
             /*** Overrides with config values ***/
              if(config.containsKey(key.key))
                  processedArgs[key.value] = config.getProperty(key.key)
-
-            log.info   key.value + ":" + processedArgs[key.value]
 		}
 
         /*** Overrides with command line values ***/
         args.each { it ->
-
 			ARG_KEYS.each{ key -> 
             	if (it.startsWith(cliOption(key.value))) {
 	                if (hasValue(it, key.value)) {
 	                    processedArgs[key.value] = valueOf(it, key.value)
 	                } 
 	            }
-                log.info key.value + " :" + processedArgs[key.value]
 			}
         }
+		/*** Output final values used by program ****/
+		ARG_KEYS.each{ key -> 
+            log.info   key.value + ":" + processedArgs[key.value]
+		}
 
         if (!(processedArgs[ARG_KEYS.DB_URL_FLAG])) {
             sayErr "\nError: Database URL not set, please set this parameter using the ${cliOption(ARG_KEYS.DB_URL_FLAG)} option"
@@ -87,8 +92,7 @@ class CsvImporterMain {
             usage()
             System.exit(1)
         }
-
-        processedArgs
+        return processedArgs
     }
 
     private static def hasValue(cliArg, cliOpt) {
@@ -108,17 +112,18 @@ class CsvImporterMain {
     }
 
     private static def getEnv(args){
-        String env = null
-        args.each { String it ->
-
-            if (it.startsWith("-Denv")) {
-                String[] values = it.split("=")
-                if(values.length == 2)
-                    env = values[1].trim()
-                return
-            }
+	    String env = null
+        args.each { it ->
+			
+			if (it.startsWith(cliOption('env'))) {
+	             if (hasValue(it, 'env')) {
+	                env = valueOf(it, 'env')
+					return env
+	             } 
+			}
         }
         return env
     }
+
 
 }

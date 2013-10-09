@@ -58,8 +58,8 @@ class CsvImporterProcessor {
                 filesToProcess++
         }
         if(!filesReady) {
+			log.info "Files not ready to process. Number of files found:" + filesToProcess.toString()
             System.exit(0)
-            log.info "Files not ready to process. Number of files found:" + filesToProcess.toString()
         }
 
 		for(TableMetaData table:TABLES)   {
@@ -81,11 +81,12 @@ class CsvImporterProcessor {
         if(StringUtils.isNotBlank(filesToBeProcessed))
             EmailService.notifyProcessingStarted(filesToBeProcessed)
         else {
+			log.info "No Files processed: " + filesToProcess + " files found. ß"
             System.exit(0)
-            log.info "No Files processed"
         }
         String filesProcessed = ""
         for(TableMetaData table:TABLES)   {
+			log.error table.fileName
             File file = new File(processingDir, table.fileName)
 			String processed_prefix = ""
             if(file.isFile() && file.exists())    {
@@ -115,7 +116,7 @@ class CsvImporterProcessor {
                 else
                     log.info "FILE PROCESSED: " + file.getName()
             } else {
-                log.error "FILE NOT PROCESSED: " + file.getName()
+                log.error "Error File Not Processed because File: " + table.fileName + "is a file:" + file.isFile() + " exists " + file.exists()
             }
         }
         EmailService.notifyProcessingCompleted(filesProcessed)

@@ -81,7 +81,7 @@ are tweaking the source code:
     Options all have POSIX "long opt" format, i.e. --option-name=option-value.
     The "=" is optional and can be replaced with whitespace. E.g.:
 
-    %> gradle -q run -PcliArgs="--db-url=jdbc:postgresql://localhost:5432/ssp"
+    %> gradle -q run -PcliArgs="--env=prod --db-url=jdbc:postgresql://localhost:5432/ssp"
 
 Options
 =======
@@ -90,7 +90,7 @@ Options
 
     - setting run environment -
 
-    use either -Denv=environment example: -Denv=prod or set system environment variable env to environment
+    use either -PcliArgs="--env=environment" example: -PcliArgs="--env=prod" or set system environment variable env to environment
 
     - Database Settings -
 
