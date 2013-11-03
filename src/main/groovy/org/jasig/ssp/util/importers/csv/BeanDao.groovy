@@ -24,6 +24,8 @@ import au.com.bytecode.csv.bean.MappingStrategy
 import java.beans.PropertyDescriptor
 import groovy.util.logging.Log4j
 import static org.apache.tools.ant.util.StringUtils.removeSuffix
+import org.apache.commons.lang.StringEscapeUtils
+import org.apache.commons.lang.StringUtils
 
 @Log4j
 class BeanDao {
@@ -93,9 +95,9 @@ class BeanDao {
         if (null != prop) {
             value =  prop.getReadMethod().invoke(bean).toString();
         }
-        if(value == null || value.equals('null'))
+        if(StringUtils.isBlank(value) || value.equals('null'))
             return null;
-        return "'" + value  + "'"
+        return "'" + StringEscapeUtils.escapeSql(value)  + "'"
     }
 
     def private getPropertyValueFromColumnName(Object bean, String columnName) {
@@ -103,9 +105,13 @@ class BeanDao {
         String value = null
         if (null != prop) {
             value =  prop.getReadMethod().invoke(bean).toString();
-        }
-        if(value == null || value.equals('null'))
+        }else{
+			log.debug("Property not found for:" + columnName);
+		}
+        if(StringUtils.isBlank(value) || value.equals('null')){
+			log.debug("No Value for property:" + columnName) ;
             return null;
-        return "'" + value + "'"
+		}
+        return "'" + StringEscapeUtils.escapeSql(value) + "'"
     }
 }

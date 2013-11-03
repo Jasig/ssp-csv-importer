@@ -68,6 +68,7 @@ class CsvToBean {
 					String errorMessage = "Error parsing CSV! Error occured on column: " + col + " : value " + value + " property: " + prop.name + " error:" + exp.getMessage() + " processing continues.\n ";
 					log.error errorMessage
 					this.columnParsingErrors += errorMessage
+					
 				}
             }
         }

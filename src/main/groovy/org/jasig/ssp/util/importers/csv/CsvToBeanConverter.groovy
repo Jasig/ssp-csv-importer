@@ -63,6 +63,7 @@ class CsvToBeanConverter {
         List beans =  csvToBean.parse(strategy, reader, editors);
         List validatedBeans = new ArrayList<Object>()
         Integer beanLineNumber = 0;
+		
         if(validate) {
             beanValidator = factory.getValidator() as Validator
             for(bean in beans)   {
@@ -70,13 +71,13 @@ class CsvToBeanConverter {
                 if(bean != null){
                     validatedBeans.add(bean)
                 }
-            }
-            if(beansInViolation > maximumValidationErrorPerFile )  {
-				String msg = VALIDATION_ERROR + "Maximum number of validation errors exceeded for "  + beans.get(0).getClass().getName()
-                log.error msg
-                beanSetValidationErrors = msg + "\n Validation Errors follow: \n" + beanSetValidationErrors
-                EmailService.notifyExcessiveValidationErrors(beanSetValidationErrors)
-                return new ArrayList<Object>()
+				if(beansInViolation > maximumValidationErrorPerFile )  {
+					String msg = VALIDATION_ERROR + "Maximum number of validation errors exceeded for "  + beans.get(0).getClass().getName()
+					log.error msg
+					beanSetValidationErrors = msg + "\n Validation Errors follow: \n" + beanSetValidationErrors
+					EmailService.notifyExcessiveValidationErrors(beanSetValidationErrors)
+					return new ArrayList<Object>()
+				}
             }
             if(StringUtils.isNotBlank(beanSetValidationErrors))
                 notifyValidationError(beanSetValidationErrors)

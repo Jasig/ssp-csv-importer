@@ -21,10 +21,11 @@ package org.jasig.ssp.util.importers.csv
 
 import groovy.time.TimeCategory
 import groovy.util.logging.Log4j
+import java.lang.reflect.Method
 
 import static CsvImporterMeta.*
-import static org.jasig.ssp.util.importers.csv.CsvTableDefinition.TABLES
 import org.apache.commons.lang.StringUtils
+
 @Log4j
 class CsvImporterProcessor {
     public static process() {
@@ -48,7 +49,10 @@ class CsvImporterProcessor {
 		log.info 'Path To Archive Folder: ' + ARGS[ARG_KEYS.ARCHIVE_DIR_FLAG]
 		Boolean filesReady = true
         Integer filesToProcess = 0;
-        for(TableMetaData table:TABLES)   {
+		
+		List<TableMetaData> tables = getTables()
+		
+        for(TableMetaData table:tables)   {
             File file = new File(inputDir, table.fileName)
 			Date fileModifiedDate =  new Date(file.lastModified())
             if(file.isFile() && file.exists() && !fileModifiedDate.before(lastRun)){
@@ -62,7 +66,7 @@ class CsvImporterProcessor {
             System.exit(0)
         }
 
-		for(TableMetaData table:TABLES)   {
+		for(TableMetaData table:tables)   {
             File file = new File(inputDir, table.fileName)
             if(file.isFile() && file.exists()) {
 			    file.renameTo(new File(processingDir, file.getName()));
@@ -70,7 +74,7 @@ class CsvImporterProcessor {
         }
         filesToProcess = 0
         String filesToBeProcessed = ""
-        for(TableMetaData table:TABLES)   {
+        for(TableMetaData table:tables)   {
             File file = new File(processingDir, table.fileName)
             if(file.isFile() && file.exists()) {
                 filesToBeProcessed += file.getName() + " \n"
@@ -85,7 +89,7 @@ class CsvImporterProcessor {
             System.exit(0)
         }
         String filesProcessed = ""
-        for(TableMetaData table:TABLES)   {
+        for(TableMetaData table:tables)   {
 			log.error table.fileName
             File file = new File(processingDir, table.fileName)
 			String processed_prefix = ""
@@ -130,4 +134,10 @@ class CsvImporterProcessor {
         }
         return dir
     }
+
+	private static List<TableMetaData> getTables(){
+		Class<?> cls = Class.forName(ARGS[ARG_KEYS.TABLES_DEFINITION_CLASS_FLAG]);
+		Method constructTableMethod = cls.getDeclaredMethod("constructTableDefinitions")
+		return constructTableMethod.invoke(null);
+	}
 }

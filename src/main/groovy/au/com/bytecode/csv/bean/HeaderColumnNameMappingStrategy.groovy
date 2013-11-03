@@ -4,8 +4,10 @@ import java.beans.BeanInfo
 import java.beans.IntrospectionException
 import java.beans.Introspector
 import java.beans.PropertyDescriptor
+import org.apache.commons.lang.StringUtils
 import au.com.bytecode.csv.CSVReader
 import  static org.jasig.ssp.util.importers.csv.CsvImporterMeta.*
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,25 +26,43 @@ class HeaderColumnNameMappingStrategy implements MappingStrategy {
     }
 
     public void captureHeader(CSVReader reader) throws IOException {
-        header = reader.readNext();
+        header = removeBlankColumns(reader.readNext())
     }
+	
+	private String[] removeBlankColumns(String[] header){
+		List<String> names = new ArrayList<String>()
+		for(String name: header){
+			if(StringUtils.isNotBlank(name))
+				names.add(name)
+		}
+		return names.toArray(new String[names.size()])
+	}
+	
+	
 
     public PropertyDescriptor findDescriptor(int col) throws IntrospectionException {
         return findDescriptorFromColumnName(getColumnName(col));
     }
 
     public PropertyDescriptor findDescriptorFromColumnName(String columnName) throws IntrospectionException {
-        if(ARGS[ARG_KEYS.COLUMN_NAME_FORMAT_FLAG] == "underscore")
-        {
-            //name.trim().replaceAll(/(\B[A-Z])/,'_$1').toLowerCase()
-            String[] columnNames =  columnName.split("_")
-            columnName = columnNames[0].toLowerCase()
-            for(Integer i = 1; i < columnNames.length; i++) {
-                columnName +=  columnNames[i].capitalize()
-            }
-        }
+		columnName = convetToCamelCase(columnName);
         return (null != columnName && columnName.trim().length() > 0) ? findDescriptor(columnName) : null;
     }
+	
+	private convetToCamelCase(String columnName){
+		if(ARGS[ARG_KEYS.COLUMN_NAME_FORMAT_FLAG] == "underscore")
+		{
+			if(StringUtils.isBlank(columnName))
+				return null;
+			//name.trim().replaceAll(/(\B[A-Z])/,'_$1').toLowerCase()
+			String[] columnNames =  columnName.split("_")
+			columnName = columnNames[0].toLowerCase()
+			for(Integer i = 1; i < columnNames.length; i++) {
+				columnName +=  columnNames[i].capitalize()
+			}
+		}
+		return columnName;
+	}
 
     public String getColumnName(int col) {
         return (null != header && col < header.length) ? header[col] : null;

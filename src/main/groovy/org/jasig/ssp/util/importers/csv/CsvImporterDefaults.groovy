@@ -41,7 +41,8 @@ class CsvImporterDefaults {
 	    (ARG_KEYS.ARCHIVE_DIR_FLAG):rootPath + "archive/",
 	    (ARG_KEYS.MAX_FAIL_FLAG):100,
 	    (ARG_KEYS.LAG_TIME_MIN_FLAG):10,  //time required for file to be undisturbed before processing in minutes
-	    (ARG_KEYS.COLUMN_NAME_FORMAT_FLAG):"underscore"]  //underscore/camelcase
+	    (ARG_KEYS.COLUMN_NAME_FORMAT_FLAG):"underscore",
+		(ARG_KEYS.TABLES_DEFINITION_CLASS_FLAG):'org.jasig.ssp.util.importers.csv.tables.CsvTableDefinition']  //underscore/camelcase
 	
 	public static def ARG_CSV_DEFAULT_VALUES = [
 		(ARG_KEYS.CSV_SEPARATOR_FLAG):DEFAULT_SEPARATOR,

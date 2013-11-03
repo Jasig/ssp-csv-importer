@@ -52,7 +52,8 @@ class CsvImporterMeta {
 		"EMAIL_USERNAME_FLAG":'email-username',
 		"EMAIL_PASSWORD_FLAG":'email-password',
 		"EMAIL_PROTOCOL_FLAG":'email-protocol',
-		"EMAIL_SSL_REQUIRED_FLAG":'email-ssl']
+		"EMAIL_SSL_REQUIRED_FLAG":'email-ssl',
+		"TABLES_DEFINITION_CLASS_FLAG":'tables-definition-class']
 
     public static def cliOption(name) {
         "--${name}"
